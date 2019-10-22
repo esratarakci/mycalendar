@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MyCalendarDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="CEntities" annotation:LazyLoadingEnabled="true">
+    <FunctionImport Name="spForgotPass" ReturnType="Collection(MyCalendarDBModel.spForgotPass_Result)">
+      <Parameter Name="Email" Mode="In" Type="String" />
+    </FunctionImport>
+    <EntitySet Name="Customer" EntityType="MyCalendarDBModel.Customer" />
+    <EntitySet Name="Meeting" EntityType="MyCalendarDBModel.Meeting" />
+    <EntitySet Name="MeetingDone" EntityType="MyCalendarDBModel.MeetingDone" />
+    <EntitySet Name="MeetingVia" EntityType="MyCalendarDBModel.MeetingVia" />
+    <EntitySet Name="sysdiagrams" EntityType="MyCalendarDBModel.sysdiagrams" />
+    <EntitySet Name="Users" EntityType="MyCalendarDBModel.Users" />
+    <EntitySet Name="VW_Customer" EntityType="MyCalendarDBModel.VW_Customer" />
+    <EntitySet Name="VW_Meeting" EntityType="MyCalendarDBModel.VW_Meeting" />
+    <AssociationSet Name="FK_Customer_Users" Association="MyCalendarDBModel.FK_Customer_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Customer" EntitySet="Customer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Meeting_Customer" Association="MyCalendarDBModel.FK_Meeting_Customer">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Meeting" EntitySet="Meeting" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Meeting_MeetingDone" Association="MyCalendarDBModel.FK_Meeting_MeetingDone">
+      <End Role="MeetingDone" EntitySet="MeetingDone" />
+      <End Role="Meeting" EntitySet="Meeting" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Meeting_MeetingVia" Association="MyCalendarDBModel.FK_Meeting_MeetingVia">
+      <End Role="MeetingVia" EntitySet="MeetingVia" />
+      <End Role="Meeting" EntitySet="Meeting" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Meeting_Users" Association="MyCalendarDBModel.FK_Meeting_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Meeting" EntitySet="Meeting" />
+    </AssociationSet>
+  </EntityContainer>
+  <ComplexType Name="spForgotPass_Result">
+    <Property Type="Int32" Name="ReturnCode" Nullable="false" />
+    <Property Type="Guid" Name="UniqueId" Nullable="true" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Mail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Adress" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Users" Relationship="MyCalendarDBModel.FK_Customer_Users" FromRole="Customer" ToRole="Users" />
+    <NavigationProperty Name="Meeting" Relationship="MyCalendarDBModel.FK_Meeting_Customer" FromRole="Customer" ToRole="Meeting" />
+  </EntityType>
+  <EntityType Name="Meeting">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="MeetingViaId" Type="Byte" />
+    <Property Name="MeetingDoneId" Type="Byte" />
+    <Property Name="CustomerId" Type="Int32" Nullable="false" />
+    <Property Name="DateStart" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="DateEnd" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Whom" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Customer" Relationship="MyCalendarDBModel.FK_Meeting_Customer" FromRole="Meeting" ToRole="Customer" />
+    <NavigationProperty Name="MeetingDone" Relationship="MyCalendarDBModel.FK_Meeting_MeetingDone" FromRole="Meeting" ToRole="MeetingDone" />
+    <NavigationProperty Name="MeetingVia" Relationship="MyCalendarDBModel.FK_Meeting_MeetingVia" FromRole="Meeting" ToRole="MeetingVia" />
+    <NavigationProperty Name="Users" Relationship="MyCalendarDBModel.FK_Meeting_Users" FromRole="Meeting" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="MeetingDone">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Byte" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Meeting" Relationship="MyCalendarDBModel.FK_Meeting_MeetingDone" FromRole="MeetingDone" ToRole="Meeting" />
+  </EntityType>
+  <EntityType Name="MeetingVia">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Byte" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Meeting" Relationship="MyCalendarDBModel.FK_Meeting_MeetingVia" FromRole="MeetingVia" ToRole="Meeting" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="PasswordResetId" Type="Guid" />
+    <NavigationProperty Name="Customer" Relationship="MyCalendarDBModel.FK_Customer_Users" FromRole="Users" ToRole="Customer" />
+    <NavigationProperty Name="Meeting" Relationship="MyCalendarDBModel.FK_Meeting_Users" FromRole="Users" ToRole="Meeting" />
+  </EntityType>
+  <EntityType Name="VW_Customer">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Mail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Adress" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <Property Name="FullName" Type="String" MaxLength="551" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="VW_Meeting">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="CustomerId" />
+      <PropertyRef Name="DateStart" />
+      <PropertyRef Name="DateEnd" />
+      <PropertyRef Name="MeetingViaName" />
+      <PropertyRef Name="MeetingDoneName" />
+      <PropertyRef Name="CustomerName" />
+      <PropertyRef Name="Username" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="MeetingViaId" Type="Byte" />
+    <Property Name="MeetingDoneId" Type="Byte" />
+    <Property Name="CustomerId" Type="Int32" Nullable="false" />
+    <Property Name="DateStart" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="DateEnd" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Whom" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="MeetingViaName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MeetingDoneName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CustomerName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="CustomerMail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CustomerPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <Association Name="FK_Customer_Users">
+    <End Type="MyCalendarDBModel.Users" Role="Users" Multiplicity="1" />
+    <End Type="MyCalendarDBModel.Customer" Role="Customer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Customer">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Meeting_Customer">
+    <End Type="MyCalendarDBModel.Customer" Role="Customer" Multiplicity="1" />
+    <End Type="MyCalendarDBModel.Meeting" Role="Meeting" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meeting">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Meeting_MeetingDone">
+    <End Type="MyCalendarDBModel.MeetingDone" Role="MeetingDone" Multiplicity="0..1" />
+    <End Type="MyCalendarDBModel.Meeting" Role="Meeting" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MeetingDone">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meeting">
+        <PropertyRef Name="MeetingDoneId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Meeting_MeetingVia">
+    <End Type="MyCalendarDBModel.MeetingVia" Role="MeetingVia" Multiplicity="0..1" />
+    <End Type="MyCalendarDBModel.Meeting" Role="Meeting" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MeetingVia">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meeting">
+        <PropertyRef Name="MeetingViaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Meeting_Users">
+    <End Type="MyCalendarDBModel.Users" Role="Users" Multiplicity="1" />
+    <End Type="MyCalendarDBModel.Meeting" Role="Meeting" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meeting">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
