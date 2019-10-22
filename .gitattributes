@@ -1,2 +1,2 @@
-*.javascript linguist-language=C#
-
+special-vendored-path/* linguist-vendored
+jquery.js linguist-vendored=false
